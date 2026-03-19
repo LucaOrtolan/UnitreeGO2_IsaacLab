@@ -1,8 +1,15 @@
+# Copyright (c) 2024-2025, Laban Njoroge Mahihu
+# All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
 import isaaclab.sim as sim_utils
 from isaaclab.assets import ArticulationCfg
 from isaaclab.actuators import DCMotorCfg
 from isaaclab.utils.assets import ISAACLAB_NUCLEUS_DIR
 
+
+"""Configuration of Unitree Go2 using DC-Motor actuator model."""
 UNITREE_GO2_CFG = ArticulationCfg(
     spawn=sim_utils.UsdFileCfg(
         usd_path=f"{ISAACLAB_NUCLEUS_DIR}/Robots/Unitree/Go2/go2.usd",
@@ -21,12 +28,12 @@ UNITREE_GO2_CFG = ArticulationCfg(
         ),
     ),
     init_state=ArticulationCfg.InitialStateCfg(
-        pos=(0.0, 0.0, 0.4),
+        pos=(0.0, 0.0, 0.42), 
         joint_pos={
             ".*L_hip_joint": 0.1,
             ".*R_hip_joint": -0.1,
             "F[L,R]_thigh_joint": 0.8,
-            "R[L,R]_thigh_joint": 1.0,
+            "R[L,R]_thigh_joint": 1,
             ".*_calf_joint": -1.5,
         },
         joint_vel={".*": 0.0},
@@ -44,4 +51,3 @@ UNITREE_GO2_CFG = ArticulationCfg(
         ),
     },
 )
-"""Configuration of Unitree Go2 using DC-Motor actuator model."""
