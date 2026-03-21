@@ -3,21 +3,21 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-
 from isaaclab.utils import configclass
-from .rough_env_cfg import UnitreeGo2RoughEnvCfg
 
-##
-# Scene definition
-##
+from .rough_env_cfg import UnitreeGo2RoughEnvCfg
+from GO2_policy.robots.unitree import UNITREE_GO2_WITH_D1_550_CFG
 
 
 @configclass
-class Go2PolicyEnvCfg(UnitreeGo2RoughEnvCfg):
+class LocomanipulatorFlatEnvCfg(UnitreeGo2RoughEnvCfg):
     def __post_init__(self):
         # post init of parent
         super().__post_init__()
-
+        
+        self.scene.num_envs = 4096
+        self.scene.robot = UNITREE_GO2_WITH_D1_550_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+        
         # override rewards
         self.rewards.flat_orientation_l2.weight = -2.5
         self.rewards.feet_air_time.weight = 0.25
@@ -32,7 +32,7 @@ class Go2PolicyEnvCfg(UnitreeGo2RoughEnvCfg):
         self.curriculum.terrain_levels = None
 
 
-class Go2PolicyEnvCfg_PLAY(Go2PolicyEnvCfg):
+class LocomanipulatorFlatEnvCfg_PLAY(LocomanipulatorFlatEnvCfg):
     def __post_init__(self) -> None:
         # post init of parent
         super().__post_init__()

@@ -11,51 +11,52 @@ from . import agents
 # Register Gym environments.
 ##
 
-
 gym.register(
-    id="Template-Go2-Policy-v0",
+    id="Template-Quadrrl-Velocity-Flat-Unitree-Go2-v0",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
-        "env_cfg_entry_point": f"{__name__}.go2_policy_env_cfg:Go2PolicyEnvCfg",
-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:PPORunnerCfg",
-        "skrl_amp_cfg_entry_point": f"{agents.__name__}:skrl_amp_cfg.yaml",
-        "skrl_cfg_entry_point": f"{agents.__name__}:skrl_ppo_cfg.yaml",
-    },
-)
-
-import gymnasium as gym
-
-from . import agents
-
-##
-# Register Gym environments.
-##
-
-gym.register(
-    id="Template-Go2-Policy-v0",
-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
-    disable_env_checker=True,
-    kwargs={
-        "env_cfg_entry_point": f"{__name__}.go2_policy_env_cfg:Go2PolicyEnvCfg",
+        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:UnitreeGo2FlatEnvCfg",
         "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:UnitreeGo2FlatPPORunnerCfg",
         "skrl_cfg_entry_point": f"{agents.__name__}:skrl_flat_ppo_cfg.yaml",
     },
 )
 
 gym.register(
-    id="Template-Go2-Policy-v0",
+    id="Template-Quadrrl-Velocity-Flat-Unitree-Go2-Play-v0",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
-        "env_cfg_entry_point": f"{__name__}.go2_policy_env_cfg:Go2PolicyEnvCfg_PLAY",
+        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:UnitreeGo2FlatEnvCfg_PLAY",
         "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:UnitreeGo2FlatPPORunnerCfg",
         "skrl_cfg_entry_point": f"{agents.__name__}:skrl_flat_ppo_cfg.yaml",
+    },
+)
+
+gym.register(
+    id="Template-Velocity-Flat-Locomanipulator-v0",
+    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": f"{__name__}.locomanipulator_env_cfg:LocomanipulatorFlatEnvCfg",
+        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:LocomanipulatorFlatPPORunnerCfg",
+        # "skrl_cfg_entry_point": f"{agents.__name__}:skrl_flat_ppo_cfg.yaml",
+    },
+)
+
+gym.register(
+    id="Template-Velocity-Flat-Locomanipulator-Play-v0",
+    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": f"{__name__}.locomanipulator_env_cfg:LocomanipulatorFlatEnvCfg_PLAY",
+        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:LocomanipulatorFlatPPORunnerCfg",
+        # "skrl_cfg_entry_point": f"{agents.__name__}:skrl_flat_ppo_cfg.yaml",
     },
 )
 
 # gym.register(
-#     id="Template-Go2-Policy-v0",
+#     id="Template-Quadrrl-Velocity-Rough-Unitree-Go2-v0",
 #     entry_point="isaaclab.envs:ManagerBasedRLEnv",
 #     disable_env_checker=True,
 #     kwargs={
@@ -66,7 +67,7 @@ gym.register(
 # )
 
 # gym.register(
-#     id="Template-Go2-Policy-v0",
+#     id="Template-Quadrrl-Velocity-Rough-Unitree-Go2-Play-v0",
 #     entry_point="isaaclab.envs:ManagerBasedRLEnv",
 #     disable_env_checker=True,
 #     kwargs={

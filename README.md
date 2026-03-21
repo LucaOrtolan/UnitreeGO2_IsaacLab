@@ -18,3 +18,4 @@ In the GUI, select Moveable Base, None for all joints except hip, Allow Collisio
 D1 documentation here: https://support.unitree.com/home/en/developer/D1Arm_services
 Download the URDF and paste it in the unitree_ros folder where the other descriptions are. 
 
+Task names are registered in the __init__.py file inside the tasks/manager_based/go2_policy folder
