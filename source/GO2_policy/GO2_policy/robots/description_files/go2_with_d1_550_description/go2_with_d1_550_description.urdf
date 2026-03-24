@@ -759,12 +759,50 @@
   <link name="front_camera">
   </link>
 
-  <joint name="arm_mount_joint" type="fixed">
-    <origin xyz="0.1 0 0.05" rpy="0 0 0"/>
+  <!-- ================= MOUNTING PLATE ================= -->
+  <link name="arm_mount_plate">
+    <inertial>
+      <!-- Approximate small plate mass -->
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.5"/>
+      <inertia ixx="0.001" ixy="0" ixz="0"
+              iyy="0.001" iyz="0"
+              izz="0.001"/>
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.20 0.10 0.015"/>
+      </geometry>
+      <material name="mount_plate_color">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.20 0.10 0.015"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Plate attached to robot base -->
+  <joint name="arm_plate_joint" type="fixed">
+    <!-- centered position -->
+    <origin xyz="0 0 0.065" rpy="0 0 0"/>
     <parent link="base"/>
-    <child link="arm_base_link"/>
+    <child link="arm_mount_plate"/>
   </joint>
 
+  <!-- Arm mounted on top of plate -->
+  <joint name="arm_mount_joint" type="fixed">
+    <!-- lift by half plate height -->
+    <origin xyz="0 0 0.0075" rpy="0 0 0"/>
+    <parent link="arm_mount_plate"/>
+    <child link="arm_base_link"/>
+  </joint>
   <link
     name="arm_base_link">
     <inertial>

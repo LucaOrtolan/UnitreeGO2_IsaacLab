@@ -55,7 +55,7 @@ UNITREE_GO2_CFG = ArticulationCfg(
 # =================== QUADRUPED W/ ARM ===================
 UNITREE_GO2_WITH_D1_550_CFG = ArticulationCfg(
     spawn=sim_utils.UsdFileCfg(
-        usd_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "description_files/go2_with_d1_550_description/go2_with_d1_550_description.usd"),
+        usd_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "description_files/go2_with_d1_550_description/go2_with_d1_550_description/go2_with_d1_550_description.usd"),
         activate_contact_sensors=True,
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
             disable_gravity=False,
