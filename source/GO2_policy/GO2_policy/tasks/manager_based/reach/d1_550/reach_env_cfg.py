@@ -1,16 +1,23 @@
-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
-# All rights reserved.
+# Copyright 2025 Enactic, Inc.
 #
-# SPDX-License-Identifier: BSD-3-Clause
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 from dataclasses import MISSING
 
 import isaaclab.sim as sim_utils
+from isaaclab.actuators import ImplicitActuatorCfg
+from isaaclab.assets.articulation import ArticulationCfg
 from isaaclab.assets import ArticulationCfg, AssetBaseCfg
-from isaaclab.devices import DevicesCfg
-from isaaclab.devices.gamepad import Se3GamepadCfg
-from isaaclab.devices.keyboard import Se3KeyboardCfg
-from isaaclab.devices.spacemouse import Se3SpaceMouseCfg
 from isaaclab.envs import ManagerBasedRLEnvCfg
 from isaaclab.managers import ActionTermCfg as ActionTerm
 from isaaclab.managers import CurriculumTermCfg as CurrTerm
@@ -25,9 +32,10 @@ from isaaclab.utils import configclass
 from isaaclab.utils.assets import ISAAC_NUCLEUS_DIR
 from isaaclab.utils.noise import AdditiveUniformNoiseCfg as Unoise
 
-import isaaclab_tasks.manager_based.manipulation.reach.mdp as mdp
+from . import mdp
 
 import math
+
 ##
 # Scene definition
 ##
@@ -49,7 +57,9 @@ class ReachSceneCfg(InteractiveSceneCfg):
         spawn=sim_utils.UsdFileCfg(
             usd_path=f"{ISAAC_NUCLEUS_DIR}/Props/Mounts/SeattleLabTable/table_instanceable.usd",
         ),
-        init_state=AssetBaseCfg.InitialStateCfg(pos=(0.55, 0.0, 0.0), rot=(0.70711, 0.0, 0.0, 0.70711)),
+        init_state=AssetBaseCfg.InitialStateCfg(
+            pos=(0.55, 0.0, 0.0), rot=(0.70711, 0.0, 0.0, 0.70711)
+        ),
     )
 
     # robots
@@ -104,9 +114,39 @@ class ObservationsCfg:
         """Observations for policy group."""
 
         # observation terms (order preserved)
-        joint_pos = ObsTerm(func=mdp.joint_pos_rel, noise=Unoise(n_min=-0.01, n_max=0.01))
-        joint_vel = ObsTerm(func=mdp.joint_vel_rel, noise=Unoise(n_min=-0.01, n_max=0.01))
-        pose_command = ObsTerm(func=mdp.generated_commands, params={"command_name": "ee_pose"})
+        joint_pos = ObsTerm(
+            func=mdp.joint_pos_rel,
+            params={
+                "asset_cfg": SceneEntityCfg("robot", joint_names=[
+                                                                  "Joint1",
+                                                                  "Joint2",
+                                                                  "Joint3",
+                                                                  "Joint4",
+                                                                  "Joint5",
+                                                                  "Joint6",
+                                                                  ])
+            },
+            noise=Unoise(n_min=-0.01, n_max=0.01),
+        )
+        joint_vel = ObsTerm(
+            func=mdp.joint_vel_rel,
+            params={
+                "asset_cfg": SceneEntityCfg("robot", joint_names=[
+                                                                  "Joint1",
+                                                                  "Joint2",
+                                                                  "Joint3",
+                                                                  "Joint4",
+                                                                  "Joint5",
+                                                                  "Joint6",
+                                                                  "Joint_L",
+                                                                  "Joint_R"
+                                                                  ])
+            },
+            noise=Unoise(n_min=-0.01, n_max=0.01),
+        )
+        pose_command = ObsTerm(
+            func=mdp.generated_commands, params={"command_name": "ee_pose"}
+        )
         actions = ObsTerm(func=mdp.last_action)
 
         def __post_init__(self):
@@ -139,17 +179,27 @@ class RewardsCfg:
     end_effector_position_tracking = RewTerm(
         func=mdp.position_command_error,
         weight=-0.2,
-        params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
+        params={
+            "asset_cfg": SceneEntityCfg("robot", body_names=MISSING),
+            "command_name": "ee_pose",
+        },
     )
     end_effector_position_tracking_fine_grained = RewTerm(
         func=mdp.position_command_error_tanh,
         weight=0.1,
-        params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "std": 0.1, "command_name": "ee_pose"},
+        params={
+            "asset_cfg": SceneEntityCfg("robot", body_names=MISSING),
+            "std": 0.1,
+            "command_name": "ee_pose",
+        },
     )
     end_effector_orientation_tracking = RewTerm(
         func=mdp.orientation_command_error,
         weight=-0.1,
-        params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
+        params={
+            "asset_cfg": SceneEntityCfg("robot", body_names=MISSING),
+            "command_name": "ee_pose",
+        },
     )
 
     # action penalty
@@ -157,7 +207,16 @@ class RewardsCfg:
     joint_vel = RewTerm(
         func=mdp.joint_vel_l2,
         weight=-0.0001,
-        params={"asset_cfg": SceneEntityCfg("robot")},
+        params={"asset_cfg": SceneEntityCfg("robot", joint_names=[
+                                                                  "Joint1",
+                                                                  "Joint2",
+                                                                  "Joint3",
+                                                                  "Joint4",
+                                                                  "Joint5",
+                                                                  "Joint6",
+                                                                  "Joint_L",
+                                                                  "Joint_R"
+                                                                  ])},
     )
 
 
@@ -173,11 +232,13 @@ class CurriculumCfg:
     """Curriculum terms for the MDP."""
 
     action_rate = CurrTerm(
-        func=mdp.modify_reward_weight, params={"term_name": "action_rate", "weight": -0.005, "num_steps": 4500}
+        func=mdp.modify_reward_weight,
+        params={"term_name": "action_rate", "weight": -0.005, "num_steps": 4500},
     )
 
     joint_vel = CurrTerm(
-        func=mdp.modify_reward_weight, params={"term_name": "joint_vel", "weight": -0.001, "num_steps": 4500}
+        func=mdp.modify_reward_weight,
+        params={"term_name": "joint_vel", "weight": -0.001, "num_steps": 4500},
     )
 
 
@@ -211,20 +272,3 @@ class ReachEnvCfg(ManagerBasedRLEnvCfg):
         self.viewer.eye = (3.5, 3.5, 3.5)
         # simulation settings
         self.sim.dt = 1.0 / 60.0
-
-        self.teleop_devices = DevicesCfg(
-            devices={
-                "keyboard": Se3KeyboardCfg(
-                    gripper_term=False,
-                    sim_device=self.sim.device,
-                ),
-                "gamepad": Se3GamepadCfg(
-                    gripper_term=False,
-                    sim_device=self.sim.device,
-                ),
-                "spacemouse": Se3SpaceMouseCfg(
-                    gripper_term=False,
-                    sim_device=self.sim.device,
-                ),
-            },
-        )

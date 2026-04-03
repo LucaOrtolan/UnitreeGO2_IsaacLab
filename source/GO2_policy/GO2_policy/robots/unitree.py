@@ -61,29 +61,49 @@ D1_550_CFG = ArticulationCfg(
             disable_gravity=False,
             max_depenetration_velocity=5.0,
         ),
-        activate_contact_sensors=False,
+        articulation_props=sim_utils.ArticulationRootPropertiesCfg(
+            enabled_self_collisions=False,
+            solver_position_iteration_count=8,
+            solver_velocity_iteration_count=0,
+        ),
     ),
     init_state=ArticulationCfg.InitialStateCfg(
         joint_pos={
-            "Joint1": 0.0,
+            "Joint1": 1.57,
             "Joint2": 0.0,
-            "Joint3": 0.0,
-            "Joint4": 0.0,
+            "Joint3": -1.57,
+            "Joint4": 1.57,
             "Joint5": 0.0,
             "Joint6": 0.0,
-            # optional gripper
             "Joint_L": 0.0,
-            "Joint_R": 0.0,
+            "Joint_R": 0.0
         },
     ),
     actuators={
-        "arm_proximal": ImplicitActuatorCfg( 
-            joint_names_expr=[".*"],
-            effort_limit_sim=87.0,
-            stiffness=800.0,
-            damping=40.0,
+        "arm": ImplicitActuatorCfg(
+            joint_names_expr=["Joint[1-6]"],
+            velocity_limit_sim={
+                "Joint[3-4]": 2.175,
+                "Joint[1-2]": 2.175,
+                "Joint[5-6]": 2.61,
+            },
+            effort_limit_sim={
+                "Joint[1-2]": 40.0,
+                "Joint[3-4]": 27.0,
+                "Joint[5-6]": 7.0,
+            },
+            stiffness=80.0,
+            damping=4.0,
         ),
-}
+        "gripper": ImplicitActuatorCfg(
+            joint_names_expr=["Joint_R", "Joint_L"],
+            velocity_limit_sim=0.2,
+            effort_limit_sim=333.33,
+            stiffness=2e3,
+            damping=1e2,
+        ),
+    },
+    soft_joint_pos_limit_factor=1.0,
 )
 
 
