@@ -75,8 +75,8 @@ D1_550_CFG = ArticulationCfg(
             "Joint4": 1.57,
             "Joint5": 0.0,
             "Joint6": 0.0,
-            "Joint_L": 0.0,
-            "Joint_R": 0.0
+            # "Joint_L": 0.0,
+            # "Joint_R": 0.0
         },
     ),
     actuators={
@@ -95,13 +95,13 @@ D1_550_CFG = ArticulationCfg(
             stiffness=80.0,
             damping=4.0,
         ),
-        "gripper": ImplicitActuatorCfg(
-            joint_names_expr=["Joint_R", "Joint_L"],
-            velocity_limit_sim=0.2,
-            effort_limit_sim=333.33,
-            stiffness=2e3,
-            damping=1e2,
-        ),
+        # "gripper": ImplicitActuatorCfg(
+        #     joint_names_expr=["Joint_R", "Joint_L"],
+        #     velocity_limit_sim=0.2,
+        #     effort_limit_sim=333.33,
+        #     stiffness=2e3,
+        #     damping=1e2,
+        # ),
     },
     soft_joint_pos_limit_factor=1.0,
 )

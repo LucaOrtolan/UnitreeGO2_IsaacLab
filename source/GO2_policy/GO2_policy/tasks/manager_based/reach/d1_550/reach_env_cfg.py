@@ -91,7 +91,7 @@ class CommandsCfg:
             pos_y=(-0.2, 0.2),
             pos_z=(0.3, 0.4),
             roll=(-math.pi / 6, math.pi / 6),
-            pitch=(math.pi / 2, math.pi / 2),
+            pitch=(-math.pi / 4, math.pi / 4),
             yaw=(-math.pi / 9, math.pi / 9),
         ),
     )
@@ -124,6 +124,8 @@ class ObservationsCfg:
                                                                   "Joint4",
                                                                   "Joint5",
                                                                   "Joint6",
+                                                                  "Joint_L",
+                                                                  "Joint_R"
                                                                   ])
             },
             noise=Unoise(n_min=-0.01, n_max=0.01),
@@ -195,7 +197,7 @@ class RewardsCfg:
     )
     end_effector_orientation_tracking = RewTerm(
         func=mdp.orientation_command_error,
-        weight=-0.1,
+        weight=-0.2,
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names=MISSING),
             "command_name": "ee_pose",
