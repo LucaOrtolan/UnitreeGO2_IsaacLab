@@ -5,6 +5,7 @@
 import os
 import isaaclab.sim as sim_utils
 from isaaclab.assets import ArticulationCfg
+from isaaclab.actuators import ImplicitActuatorCfg
 from isaaclab.actuators import DCMotorCfg
 from isaaclab.utils.assets import ISAACLAB_NUCLEUS_DIR
 
@@ -51,6 +52,40 @@ UNITREE_GO2_CFG = ArticulationCfg(
         ),
     },
 )
+
+# =================== ARM ===================
+D1_550_CFG = ArticulationCfg(
+    spawn=sim_utils.UsdFileCfg(
+        usd_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "description_files/d1_550_description/d1_550_description.usd"),
+        rigid_props=sim_utils.RigidBodyPropertiesCfg(
+            disable_gravity=False,
+            max_depenetration_velocity=5.0,
+        ),
+        activate_contact_sensors=False,
+    ),
+    init_state=ArticulationCfg.InitialStateCfg(
+        joint_pos={
+            "Joint1": 0.0,
+            "Joint2": 0.0,
+            "Joint3": 0.0,
+            "Joint4": 0.0,
+            "Joint5": 0.0,
+            "Joint6": 0.0,
+            # optional gripper
+            "Joint_L": 0.0,
+            "Joint_R": 0.0,
+        },
+    ),
+    actuators={
+        "arm_proximal": ImplicitActuatorCfg( 
+            joint_names_expr=[".*"],
+            effort_limit_sim=87.0,
+            stiffness=800.0,
+            damping=40.0,
+        ),
+}
+)
+
 
 # =================== QUADRUPED W/ ARM ===================
 UNITREE_GO2_WITH_D1_550_CFG = ArticulationCfg(
