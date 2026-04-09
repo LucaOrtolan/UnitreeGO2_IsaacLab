@@ -120,6 +120,7 @@ UNITREE_GO2_WITH_D1_550_CFG = ArticulationCfg(
             max_linear_velocity=1000.0,
             max_angular_velocity=1000.0,
             max_depenetration_velocity=1.0,
+            
         ),
         articulation_props=sim_utils.ArticulationRootPropertiesCfg(
             enabled_self_collisions=False, solver_position_iteration_count=4, solver_velocity_iteration_count=0
@@ -150,3 +151,51 @@ UNITREE_GO2_WITH_D1_550_CFG = ArticulationCfg(
     },
 )
 
+# =================== QUADRUPED W/ ARM (MANIPULATION ONLY) ===================
+UNITREE_GO2_WITH_D1_550_MANIPULATION_ONLY_CFG = ArticulationCfg(
+    spawn=sim_utils.UsdFileCfg(
+        usd_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "description_files/go2_with_d1_550_ARM_ONLY_description/go2_with_d1_550_ARM_ONLY_description/go2_with_d1_550_ARM_ONLY_description.usd"),
+        activate_contact_sensors=True,
+        rigid_props=sim_utils.RigidBodyPropertiesCfg(
+            disable_gravity=False,
+            retain_accelerations=False,
+            linear_damping=0.0,
+            angular_damping=0.0,
+            max_linear_velocity=1000.0,
+            max_angular_velocity=1000.0,
+            max_depenetration_velocity=5.0,
+        ),
+        articulation_props=sim_utils.ArticulationRootPropertiesCfg(
+            enabled_self_collisions=False, solver_position_iteration_count=8, solver_velocity_iteration_count=0
+        ),
+    ),
+    init_state=ArticulationCfg.InitialStateCfg(
+    joint_pos={
+        "Joint1": 1.57,
+        "Joint2": 0.0,
+        "Joint3": -1.57,
+        "Joint4": 1.57,
+        "Joint5": 0.0,
+        "Joint6": 0.0,
+        "Joint_L": 0.0,
+        "Joint_R": 0.0
+    },
+    ),
+    actuators={
+        "arm": ImplicitActuatorCfg(
+            joint_names_expr=["Joint[1-6]"],
+            velocity_limit_sim={
+                "Joint[3-4]": 2.175,
+                "Joint[1-2]": 2.175,
+                "Joint[5-6]": 2.61,
+            },
+            effort_limit_sim={
+                "Joint[1-2]": 40.0,
+                "Joint[3-4]": 27.0,
+                "Joint[5-6]": 7.0,
+            },
+            stiffness=80.0,
+            damping=4.0,
+        )
+    },
+)

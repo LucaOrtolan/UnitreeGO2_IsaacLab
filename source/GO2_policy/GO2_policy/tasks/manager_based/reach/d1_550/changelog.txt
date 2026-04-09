@@ -1,5 +1,0 @@
-Problem: orientation error is acceptable but positional error plateaus before reaching the optimum
-Current parameters: default UR10 reach task
-
-Attempts:
-1) increase weight for 
